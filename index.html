@@ -1,39 +1,89 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Practical</title>
-    <link rel="stylesheet" href="style1.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Practical">
-    <meta name="keywords" content="CSS beginner skills test">
-  </head>
-  <body>
-    <div class="container">
-      <header class="clearfix">
-        <h4 id="name">
-          Name:
-        </h4>
-        <nav>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Course</a></li>
-          </ul>
-        <div class="button">
-          <button type="button" id="btna">Register</button>
-          <button type="button" id="btnb">Login</button>
-        </div>
-        </nav>
-      </header>
-      <div class="content">
-        <h1>funai portal</h1>
-        <h2>post utme registration</h2>
-        <h3>registration into Alex-Ekwueme federal university<br/>
-        Ndufe Alike Ikwo</h3>
-        <h4>for academic session 2024/2025 has started</h4>
-        <button type="button" id="btn">register</button>
-      </div>
-    </div>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Loan Form</title>
+  
+  <!-- HTML -->
+  
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>Cooperate Friends Loan Form</h1>
+    </header>
+    <section>
+      
+      <form action="info.php" method="POST" autocomplete="on" accept-charset="utf-8" enctype="multipart/form-data">
+        <label for="fname">First Name:</label>
+        <input type="text" name="fname" id="fname" placeholder="John" required>
+        
+        <label for="lname">Last Name:</label>
+        <input type="text" name="lname" id="lname" placeholder="Doe" required>
+        
+        <label for="dob">Date of Birth (Age):</label>
+        <input type="date" name="dob" id="dob" required>
+        
+        <label for="contactAddress">Contact Address:</label>
+        <input type="text" name="contactAddress" id="contactAddress" required>
+        <label for="phoneNo">Phone Number: </label>
+        <input type="number" name="number" id="number" placeholder="08012345678" required/>
+        
+        <label for="village">Home Town/Village Address:</label>
+        <input type="text" name="village" id="village" required>
+        
+        <label for="education">Education (School Attended):</label>
+        <input type="text" name="school" id="education" required>
+        <fieldset>
+          <legend>Parents</legend>
+          <label for="father">Father's Name:</label>
+          <input type="text" name="father" id="father" required>
+          
+          <label for="fathersAddress">Address:</label>
+          <input type="text" name="fathersAddress" id="fathersAddress" required>
+          
+          <label for="father">Mother's Name:</label>
+          <input type="text" name="mother" id="mother">
+          <label for="mothersAddress">Address:</label>
+          <input type="text" name="mothersAddress" id="mothersAddress" required/>
+       </fieldset>
+        
+        
+        <label for="guarantor">Name of Guarantor:</label>
+        <input type="text" name="guarantor" id="guarantor" required>
+        
+        <label for="guarantorAddress">Address:</label>
+        <input type="text" name="guarantorAddress" id="guarantorAddress" required>
+        
+        <label for="guarantorNumber">Phone Number:</label>
+        <input type="number" name="guarantorNumber" id="guarantorNumber" placeholder="08012345678" required>
+        
+        <label for="witness">Name/ Address of your witness:</label>
+        <input type="text" name="witness" id="witness" required>
+        
+        <label for="witnessNumber">Phone Number:</label>
+        <input type="number" name="witnessNumber" id="witnessNumber" placeholder="08012345678" required>
+        
+        <label for="passport">Passport</label>
+        <input type="file" name="passport" id="passport" required>
+        
+        <label for="idCard">ID Card</label>
+        <input type="file" name="idCard" id="idCard" required>
+
+        <p><strong>Note</strong>: when you are sending this form back, you are advice to come with two passports and any Valid ID Card.</p>
+        
+        <input type="submit" value="Submit">
+      </form>
+    </section>
+  </main>
+  <!-- Project -->
+  <script src="main.js"></script>
+</body>
 </html>
