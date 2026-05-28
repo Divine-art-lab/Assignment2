@@ -21,7 +21,7 @@
     </header>
     <section>
       
-      <form action="info.php" method="POST" autocomplete="on" accept-charset="utf-8" enctype="multipart/form-data">
+      <form action="submit.php" method="POST" autocomplete ="on" accept-charset="utf-8" enctype="multipart/form-data">
         <label for="fname">First Name:</label>
         <input type="text" name="fname" id="fname" placeholder="John" required>
         
