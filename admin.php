@@ -92,9 +92,30 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 // --- ADMIN DASHBOARD (LOGGED IN) ---
-// Fetch all loan applications
-$stmt = $pdo->query("SELECT * FROM loans ORDER BY created_at DESC");
-$loans = $stmt->fetchAll();
+// Get search query if present
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$search_results = [];
+
+if ($search_query !== '') {
+    // Search by name, phone, email, village, school, or status
+    $search_term = '%' . $search_query . '%';
+    $stmt = $pdo->prepare("
+        SELECT * FROM loans 
+        WHERE fname LIKE :search 
+           OR lname LIKE :search 
+           OR phone LIKE :search 
+           OR village LIKE :search 
+           OR school LIKE :search 
+           OR status LIKE :search 
+        ORDER BY created_at DESC
+    ");
+    $stmt->execute([':search' => $search_term]);
+    $loans = $stmt->fetchAll();
+} else {
+    // Fetch all loan applications
+    $stmt = $pdo->query("SELECT * FROM loans ORDER BY created_at DESC");
+    $loans = $stmt->fetchAll();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -126,6 +147,57 @@ $loans = $stmt->fetchAll();
         }
         .container {
             padding: 15px;
+        }
+        .search-box {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+            background: navy;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            background: #000080;
+        }
+        .search-box a {
+            padding: 10px 20px;
+            background: #666;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .search-box a:hover {
+            background: #555;
+        }
+        .search-info {
+            background: white;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 14px;
+            color: #666;
         }
         .card {
             background: white;
@@ -184,8 +256,24 @@ $loans = $stmt->fetchAll();
     </div>
 
     <div class="container">
+        <div class="search-box">
+            <form method="GET" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%;">
+                <input type="text" name="search" placeholder="Search by name, phone, village, school, or status..." value="<?= htmlspecialchars($search_query) ?>">
+                <button type="submit">🔍 Search</button>
+                <?php if ($search_query !== ''): ?>
+                    <a href="admin.php">Clear Search</a>
+                <?php endif; ?>
+            </form>
+        </div>
+
+        <?php if ($search_query !== ''): ?>
+            <div class="search-info">
+                Found <strong><?= count($loans) ?></strong> result<?= count($loans) !== 1 ? 's' : '' ?> for "<strong><?= htmlspecialchars($search_query) ?></strong>"
+            </div>
+        <?php endif; ?>
+
         <?php if (empty($loans)): ?>
-            <p>No applications yet.</p>
+            <p>No applications <?= $search_query !== '' ? 'found matching your search.' : 'yet.' ?></p>
         <?php else: ?>
             <?php foreach ($loans as $loan): ?>
                 <div class="card">
