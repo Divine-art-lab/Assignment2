@@ -225,9 +225,22 @@ $pending  = $pdo->query("SELECT COUNT(*) FROM loans WHERE status = 'Pending'")->
 $approved = $pdo->query("SELECT COUNT(*) FROM loans WHERE status = 'Approved'")->fetchColumn();
 $rejected = $pdo->query("SELECT COUNT(*) FROM loans WHERE status = 'Rejected'")->fetchColumn();
 
+// --- SEARCH FUNCTIONALITY ---
+$search = '';
+if (isset($_GET['search'])) {
+    $search = trim($_GET['search']);
+}
+
 // --- FETCH LOANS ---
-$stmt  = $pdo->query("SELECT * FROM loans ORDER BY created_at DESC");
-$loans = $stmt->fetchAll();
+if ($search !== '') {
+    $search_param = '%' . $search . '%';
+    $stmt = $pdo->prepare("SELECT * FROM loans WHERE fname LIKE ? OR lname LIKE ? OR phone LIKE ? ORDER BY created_at DESC");
+    $stmt->execute([$search_param, $search_param, $search_param]);
+    $loans = $stmt->fetchAll();
+} else {
+    $stmt  = $pdo->query("SELECT * FROM loans ORDER BY created_at DESC");
+    $loans = $stmt->fetchAll();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -308,10 +321,57 @@ $loans = $stmt->fetchAll();
         .stat-pending .stat-number { color: #f59e0b; }
         .stat-approved .stat-number { color: #10b981; }
         .stat-rejected .stat-number { color: #ef4444; }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin: 0;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e2e6f0;
+            padding: 0 12px;
+            height: 40px;
+            width: 100%;
+            max-width: 250px;
+        }
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 8px 0;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+        }
+        .search-box input::placeholder {
+            color: #b0b8c8;
+        }
+        .search-icon {
+            color: #9ca3af;
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        .clear-search {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            display: none;
+        }
+        .clear-search.show {
+            display: block;
         }
         .loan-card {
             background: white;
@@ -422,6 +482,8 @@ $loans = $stmt->fetchAll();
             .stats { grid-template-columns: repeat(2, 1fr); }
             .card-actions { flex-direction: column; }
             .btn-action, .btn-done { min-width: 100%; }
+            .section-header { flex-direction: column; }
+            .search-box { max-width: 100%; }
         }
     </style>
 </head>
@@ -458,12 +520,21 @@ $loans = $stmt->fetchAll();
         </div>
     </div>
 
-    <h2 class="section-title">All Applications</h2>
+    <div class="section-header">
+        <h2 class="section-title">All Applications</h2>
+        <form method="get" class="search-box">
+            <span class="search-icon">&#128269;</span>
+            <input type="text" name="search" placeholder="Search by name or phone..." value="<?php echo htmlspecialchars($search); ?>">
+            <?php if ($search !== ''): ?>
+                <a href="admin.php" class="clear-search show">&#10005;</a>
+            <?php endif; ?>
+        </form>
+    </div>
 
     <?php if (empty($loans)): ?>
         <div class="empty">
             <div class="empty-icon">&#128232;</div>
-            <p>No loan applications yet.</p>
+            <p><?php echo $search !== '' ? 'No results found.' : 'No loan applications yet.'; ?></p>
         </div>
     <?php else: ?>
         <?php foreach ($loans as $loan): ?>
